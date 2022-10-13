@@ -42,6 +42,12 @@ def executar_opcao_transferencia():
     destino_cpf = input('CPF (Destino): ')
     destino_senha = input('Senha (Destino): ')
 
+def executar_opcao_livre():
+    pass
+
+def executar_opcao_sair():
+    print('Obrigado por usar nosos serviços!')
+
 def run():
     while True:
         imprime_menu()
@@ -68,9 +74,10 @@ def run():
                     executar_opcao_transferencia()
 
                 elif (opcao == 7):
-                    print('Operação livre')
+                    executar_opcao_livre()
+
                 else:
-                    print('Obrigado por usar nosos serviços!')
+                    executar_opcao_sair()
                     break
             else:
                 alerta_de_opcao_invalida()
