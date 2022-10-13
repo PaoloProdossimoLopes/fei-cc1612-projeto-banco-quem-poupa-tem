@@ -19,6 +19,10 @@ def executar_opcao_novo_cliente():
     cpf = input('CPF: ')
     tipo_conta = input('Tipo de conta: ')
     valor_inicial = input('Valor inicial da conta: ')
+    print('Nome:', nome)
+    print('CPF:', cpf)
+    print('Tipo de conta:', tipo_conta)
+    print('Valor inicial:', valor_inicial)
 
 def executar_opcao_deletando_cliente():
     pass
@@ -27,20 +31,31 @@ def executar_opcao_debito():
     cpf = input('CPF: ')
     senha = input('Senha: ')
     valor = float(input('Valor: '))
+    print('CPF:', cpf)
+    print('Senha:', senha)
+    print('Valor:', valor)
 
 def executar_opcao_deposito():
     cpf = input('CPF: ')
     valor = float(input('Valor: '))
+    print("CPF", cpf)
+    print("Valor", valor)
 
 def executar_opcao_extrato():
     cpf = input('CPF: ')
     senha = input('Senha: ')
+    print('Valor:', valor)
+    print('Senha:', senha)
 
 def executar_opcao_transferencia():
     origem_cpf = input('CPF (Origem): ')
     origem_senha = input('Senha (Origem): ')
     destino_cpf = input('CPF (Destino): ')
-    destino_senha = input('Senha (Destino): ')
+    valor = input('Valor: ')
+    print('CPF (Origem):', origem_cpf)
+    print('Senha (Origem):', origem_senha)
+    print('CPF (Destino):', destino_cpf)
+    print('Valor:', valor)
 
 def executar_opcao_livre():
     pass
