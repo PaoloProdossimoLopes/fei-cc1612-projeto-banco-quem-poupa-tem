@@ -14,11 +14,20 @@ def imprime_menu():
         8 - Sair
     ''')
 
-def novo_cliente():
+def executar_opcao_novo_cliente():
     nome = input('Nome: ')
     cpf = input('CPF: ')
     tipo_conta = input('Tipo de conta: ')
     valor_inicial = input('Valor inicial da conta: ')
+
+def executar_opcao_deletando_cliente():
+    pass
+
+def executar_opcao_debito():
+    cpf = input('CPF: ')
+    senha = input('Senha: ')
+    valor = float(input('Valor: '))
+
 
 def run():
     while True:
@@ -28,12 +37,14 @@ def run():
             opcao = int(input('Oque deseja realizar no banco? '))
             if opcao in range(1, 9):
                 if (opcao == 1):
-                    novo_cliente()
+                    executar_opcao_novo_cliente()
 
                 elif (opcao == 2):
-                    print('Apagar cliente')
+                    executar_opcao_deletando_cliente()
+
                 elif (opcao == 3):
-                    print('Débito')
+                    executar_opcao_debito()
+                    
                 elif (opcao == 4):
                     print('Déposito')  
                 elif (opcao == 5):
