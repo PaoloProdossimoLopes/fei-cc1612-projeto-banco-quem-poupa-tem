@@ -54,7 +54,7 @@ def run():
 
         try:
             opcao = int(input('Oque deseja realizar no banco? '))
-            if opcao in range(1, 9):
+            if opcao in range(0, 8):
                 if (opcao == 1):
                     executar_opcao_novo_cliente()
 
