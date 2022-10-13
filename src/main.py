@@ -28,6 +28,10 @@ def executar_opcao_debito():
     senha = input('Senha: ')
     valor = float(input('Valor: '))
 
+def executar_opcao_deposito():
+    cpf = input('CPF: ')
+    valor = float(input('Valor: '))
+
 
 def run():
     while True:
@@ -44,9 +48,10 @@ def run():
 
                 elif (opcao == 3):
                     executar_opcao_debito()
-                    
+
                 elif (opcao == 4):
-                    print('Déposito')  
+                    executar_opcao_deposito()
+
                 elif (opcao == 5):
                     print('Extrato')  
                 elif (opcao == 6):
