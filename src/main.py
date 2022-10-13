@@ -36,6 +36,11 @@ def executar_opcao_extrato():
     cpf = input('CPF: ')
     senha = input('Senha: ')
 
+def executar_opcao_transferencia():
+    origem_cpf = input('CPF (Origem): ')
+    origem_senha = input('Senha (Origem): ')
+    destino_cpf = input('CPF (Destino): ')
+    destino_senha = input('Senha (Destino): ')
 
 def run():
     while True:
@@ -60,7 +65,8 @@ def run():
                     executar_opcao_extrato()
 
                 elif (opcao == 6):
-                    print('Transferencia entre contas')
+                    executar_opcao_transferencia()
+
                 elif (opcao == 7):
                     print('Operação livre')
                 else:
