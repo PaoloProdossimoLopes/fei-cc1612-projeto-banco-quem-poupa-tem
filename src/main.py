@@ -32,6 +32,10 @@ def executar_opcao_deposito():
     cpf = input('CPF: ')
     valor = float(input('Valor: '))
 
+def executar_opcao_extrato():
+    cpf = input('CPF: ')
+    senha = input('Senha: ')
+
 
 def run():
     while True:
@@ -53,7 +57,8 @@ def run():
                     executar_opcao_deposito()
 
                 elif (opcao == 5):
-                    print('Extrato')  
+                    executar_opcao_extrato()
+
                 elif (opcao == 6):
                     print('Transferencia entre contas')
                 elif (opcao == 7):
