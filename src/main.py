@@ -135,24 +135,32 @@ def lidando_opcao(opcao):
 def escolhendo_opcao(opcao):
 
     (OPCAO_MIN, OPCAO_MAX) = (0, 8)
+    CODIGO_PARA_LOOP = -1
+
     if opcao in range(OPCAO_MIN, OPCAO_MAX):
         try: lidando_opcao(opcao)
-        except: return -1
+        except: return CODIGO_PARA_LOOP
 
     else:
         print('❌ Opção invalida! Escolha um numero entre 0 - 7.')   
+        recebendo_opcao()
+
+
+def recebendo_opcao():
+    try:
+        opcao = int(input('Oque deseja realizar no banco? '))
+        return escolhendo_opcao(opcao)
+
+    except:
+        print('❌ Opção invalida! Escolha apenas numeros.')
+        recebendo_opcao()  
 
 
 def run():
     while True:
         imprime_menu()
-
-        try:
-            opcao = int(input('Oque deseja realizar no banco? '))
-            if escolhendo_opcao(opcao) == -1: break
-
-        except:
-            print('❌ Opção invalida! Escolha apenas numeros.')   
+        if recebendo_opcao() != None: break
+        
 
 
 if __name__ == '__main__':
