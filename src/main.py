@@ -14,12 +14,13 @@ def imprime_menu():
     '''
     print(header)
 
+
 def validando_valor(mensagem):
     try:
         valor = float(input(mensagem + ' '))
         return valor
     except:
-        print('❌ Valor invalido! Coloque um valor valido')
+        print('❌ Valor invalido! Informe apenas numeros.')
         validando_valor(mensagem)
 
 
@@ -31,7 +32,7 @@ def validando_tipo_conta():
         return tipo_conta
     
     else:
-        print('❌ Valor invalido! Escolha um tipo de conta valido (comum ou plus)')
+        print('❌ Tipo de conta invalida! Escolha um tipo de conta valida (comum ou plus)')
         validando_tipo_conta()
 
 
@@ -76,26 +77,34 @@ def executar_opcao_livre():
 def executar_opcao_sair():
     print('👋🏼 Obrigado por usar nosos serviços! 👋🏼')
 
+
 def eh_novo_cliente(opcao):
     return opcao == 1
+
 
 def eh_deletat_cliente(opcao):
     return opcao == 2
 
+
 def eh_debito(opcao):
     return opcao == 3
+
 
 def eh_deposito(opcao):
     return opcao == 4
 
+
 def eh_extrato(opcao):
     return opcao == 5
+
 
 def eh_transferencia(opcao):
     return opcao == 6
 
+
 def eh_opcao_livre(opcao):
     return opcao == 7
+
 
 def lidando_opcao(opcao):
     if eh_novo_cliente(opcao):
@@ -121,7 +130,17 @@ def lidando_opcao(opcao):
 
     else:
         executar_opcao_sair()
-        raise ValueError('sair')
+        raise 
+
+def escolhendo_opcao(opcao):
+
+    (OPCAO_MIN, OPCAO_MAX) = (0, 8)
+    if opcao in range(OPCAO_MIN, OPCAO_MAX):
+        try: lidando_opcao(opcao)
+        except: return -1
+
+    else:
+        print('❌ Opção invalida! Escolha um numero entre 0 - 7.')   
 
 
 def run():
@@ -130,19 +149,10 @@ def run():
 
         try:
             opcao = int(input('Oque deseja realizar no banco? '))
-
-            (OPCAO_MIN, OPCAO_MAX) = (0, 8)
-            if opcao in range(OPCAO_MIN, OPCAO_MAX):
-                try:
-                    lidando_opcao(opcao)
-                except:
-                    break
-
-            else:
-                print('⚠️ Opção invalida! Escolha um numero entre 0 - 7.')   
+            if escolhendo_opcao(opcao) == -1: break
 
         except:
-            print('⚠️ Opção invalida! Escolha apenas numeros.')   
+            print('❌ Opção invalida! Escolha apenas numeros.')   
 
 
 if __name__ == '__main__':
