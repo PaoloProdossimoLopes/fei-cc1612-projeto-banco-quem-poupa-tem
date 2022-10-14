@@ -97,6 +97,33 @@ def eh_transferencia(opcao):
 def eh_opcao_livre(opcao):
     return opcao == 7
 
+def lidando_opcao(opcao):
+    if eh_novo_cliente(opcao):
+        executar_opcao_novo_cliente()
+
+    elif eh_deletat_cliente(opcao):
+        executar_opcao_deletando_cliente()
+
+    elif eh_debito(opcao):
+        executar_opcao_debito()
+
+    elif eh_deposito(opcao):
+        executar_opcao_deposito()
+
+    elif eh_extrato(opcao):
+        executar_opcao_extrato()
+
+    elif eh_transferencia(opcao):
+        executar_opcao_transferencia()
+
+    elif eh_opcao_livre(opcao):
+        executar_opcao_livre()
+
+    else:
+        executar_opcao_sair()
+        raise ValueError('sair')
+
+
 def run():
     while True:
         imprime_menu()
@@ -104,33 +131,13 @@ def run():
         try:
             opcao = int(input('Oque deseja realizar no banco? '))
 
-            OPCAO_MIN = 0
-            OPCAO_MAX = 8
+            (OPCAO_MIN, OPCAO_MAX) = (0, 8)
             if opcao in range(OPCAO_MIN, OPCAO_MAX):
-                if eh_novo_cliente(opcao):
-                    executar_opcao_novo_cliente()
-
-                elif eh_deletat_cliente(opcao):
-                    executar_opcao_deletando_cliente()
-
-                elif eh_debito(opcao):
-                    executar_opcao_debito()
-
-                elif eh_deposito(opcao):
-                    executar_opcao_deposito()
-
-                elif eh_extrato(opcao):
-                    executar_opcao_extrato()
-
-                elif eh_transferencia(opcao):
-                    executar_opcao_transferencia()
-
-                elif eh_opcao_livre(opcao):
-                    executar_opcao_livre()
-
-                else:
-                    executar_opcao_sair()
+                try:
+                    lidando_opcao(opcao)
+                except:
                     break
+
             else:
                 print('⚠️ Opção invalida! Escolha um numero entre 0 - 7.')   
 
