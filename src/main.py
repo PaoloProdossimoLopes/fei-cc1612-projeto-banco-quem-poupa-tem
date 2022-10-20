@@ -1,3 +1,5 @@
+import json
+
 def imprime_menu():
     header = '''
     ********************************
@@ -41,10 +43,33 @@ def executar_opcao_novo_cliente():
     cpf = input('CPF: ')
     tipo_conta = validando_tipo_conta()
     valor_inicial = validando_valor('Valor inicial da conta:')
+    json = criaClienteDict(cpf, nome, tipo_conta, valor_inicial)
+    cadastrarCliente(cpf, json)
 
+def cadastrarCliente(cpf, dict):
+    arquivoJSON = open('clientes.json', 'w')
+    json.dump(dict, arquivoJSON)
+    arquivoJSON.close()
+
+def clienteJaExiste(cliente_cpf, arquivo):
+    cpfs = json.load(arquivo).keys()
+    return cliente_cpf in cpfs
+
+def criaClienteDict(cpf, nome, tipo, valor):
+    cliente = dict()
+    cliente['nome'] = nome
+    cliente['tipo'] = tipo
+    cliente['valor_inicial'] = valor
+
+    cliente_informacao = dict()
+    cliente_informacao[cpf] = cliente
+    return cliente_informacao
 
 def executar_opcao_deletando_cliente():
-    pass
+    cpf = input('CPF: ')
+    with open('clientes.json', 'w') as arquivo:
+        json = json.load(arquivo)
+        json.pop(cpf, None)
 
 
 def executar_opcao_debito():
