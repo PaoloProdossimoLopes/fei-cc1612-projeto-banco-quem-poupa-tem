@@ -1,4 +1,8 @@
+from http import client
 import json
+from nis import cat
+from warnings import catch_warnings
+from xml.dom.minidom import Identified
 
 def imprime_menu():
     header = '''
@@ -41,33 +45,60 @@ def validando_tipo_conta():
 def executar_opcao_novo_cliente():
     nome = input('Nome: ')
     cpf = input('CPF: ')
+    senha = input('Senha: ')
     tipo_conta = validando_tipo_conta()
     valor_inicial = validando_valor('Valor inicial da conta:')
-    json = criaClienteDict(cpf, nome, tipo_conta, valor_inicial)
+    json = criaClienteDict(cpf, nome, tipo_conta, valor_inicial, senha)
     cadastrarCliente(cpf, json)
 
-def cadastrarCliente(cpf, dict):
-    arquivoJSON = open('clientes.json', 'w')
-    json.dump(dict, arquivoJSON)
-    arquivoJSON.close()
+def cadastrarCliente(cpf, json_dict):
+    dic = 0
+    with open(nome_arquivo_clientes(), "r") as file:
+        dic = json.load(file)
 
-def clienteJaExiste(cliente_cpf, arquivo):
-    cpfs = json.load(arquivo).keys()
-    return cliente_cpf in cpfs
+    dic[cpf] = json_dict[cpf]
+    print('DEBUG:', dic)
 
-def criaClienteDict(cpf, nome, tipo, valor):
+    with open(nome_arquivo_clientes(), "w") as arquivo:
+        json.dump(dic, arquivo)
+
+def nome_arquivo_clientes():
+    return 'clientes.json'
+
+def cliente_ainda_nao_esta_registardo(cpf, clientes_registrados):
+    cpfs = clientes_registrados.keys()
+    return (cpf in cpfs) == False
+
+def pega_clientes_resgistrados(file):
+    arquivo = open(nome_arquivo_clientes(), 'r')
+    clientes = json.load(arquivo)
+    arquivo.close()
+    return clientes
+
+def registrar_cliente(cliente_info, nome_arquivo):
+    arquivo = open(nome_arquivo, 'w')
+    json_dict = json.load(arquivo)
+    json_dict.update(cliente_info)
+    json.dump(json_dict, arquivo, indent=4)
+    arquivo.close()
+    
+
+def criaClienteDict(cpf, nome, tipo, valor, senha):
     cliente = dict()
+
     cliente['nome'] = nome
     cliente['tipo'] = tipo
-    cliente['valor_inicial'] = valor
+    cliente['valor'] = valor
+    cliente['senha'] = senha
 
     cliente_informacao = dict()
     cliente_informacao[cpf] = cliente
+
     return cliente_informacao
 
 def executar_opcao_deletando_cliente():
     cpf = input('CPF: ')
-    with open('clientes.json', 'w') as arquivo:
+    with open(nome_arquivo_clientes(), 'w') as arquivo:
         json = json.load(arquivo)
         json.pop(cpf, None)
 
@@ -77,10 +108,33 @@ def executar_opcao_debito():
     senha = input('Senha: ')
     valor = validando_valor('Valor:')
 
+    dict_json = {}
+    with open(nome_arquivo_clientes(), 'r') as arquivo:
+        dict_json = json.load(arquivo)
+
+    if dict_json[cpf]['senha'] == senha:
+        dict_json[cpf]['valor'] -= valor
+    else:
+        print('❌ Dados da conta invalido, tente novamente!')
+        executar_opcao_debito()
+        return
+
+    with open(nome_arquivo_clientes(), "w") as arquivo:
+        json.dump(dict_json, arquivo)
+
 
 def executar_opcao_deposito():
     cpf = input('CPF: ')
-    valor = valor = validando_valor('Valor:')
+    valor = validando_valor('Valor:')
+
+    dict_json = {}
+    with open(nome_arquivo_clientes(), 'r') as arquivo:
+        dict_json = json.load(arquivo)
+
+    dict_json[cpf]['valor'] += valor
+
+    with open(nome_arquivo_clientes(), "w") as arquivo:
+        json.dump(dict_json, arquivo)
 
 
 def executar_opcao_extrato():
