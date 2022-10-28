@@ -1,8 +1,6 @@
 from http import client
 import json
-from nis import cat
-from warnings import catch_warnings
-from xml.dom.minidom import Identified
+
 
 def imprime_menu():
     header = '''
@@ -19,6 +17,14 @@ def imprime_menu():
     ********************************
     '''
     print(header)
+
+
+def abrir_arquivo_leitura():
+    return open(nome_arquivo_clientes(), "r")
+
+
+def abrir_arquivo_escrita():
+    return open(nome_arquivo_clientes(), "w")
 
 
 def validando_valor(mensagem):
@@ -52,14 +58,19 @@ def executar_opcao_novo_cliente():
     cadastrarCliente(cpf, json)
 
 def cadastrarCliente(cpf, json_dict):
-    dic = 0
-    with open(nome_arquivo_clientes(), "r") as file:
-        dic = json.load(file)
+    dic = {}
+    try:
+        with abrir_arquivo_leitura() as file:
+            dic = json.load(file)
+    except:
+        with abrir_arquivo_escrita() as arquivo:
+            json.dump(json_dict, arquivo)
+            run()
 
     dic[cpf] = json_dict[cpf]
     print('DEBUG:', dic)
 
-    with open(nome_arquivo_clientes(), "w") as arquivo:
+    with abrir_arquivo_escrita() as arquivo:
         json.dump(dic, arquivo)
 
 def nome_arquivo_clientes():
@@ -70,13 +81,13 @@ def cliente_ainda_nao_esta_registardo(cpf, clientes_registrados):
     return (cpf in cpfs) == False
 
 def pega_clientes_resgistrados(file):
-    arquivo = open(nome_arquivo_clientes(), 'r')
+    arquivo = abrir_arquivo_leitura()
     clientes = json.load(arquivo)
     arquivo.close()
     return clientes
 
 def registrar_cliente(cliente_info, nome_arquivo):
-    arquivo = open(nome_arquivo, 'w')
+    arquivo = abrir_arquivo_escrita()
     json_dict = json.load(arquivo)
     json_dict.update(cliente_info)
     json.dump(json_dict, arquivo, indent=4)
@@ -98,9 +109,16 @@ def criaClienteDict(cpf, nome, tipo, valor, senha):
 
 def executar_opcao_deletando_cliente():
     cpf = input('CPF: ')
-    with open(nome_arquivo_clientes(), 'w') as arquivo:
-        json = json.load(arquivo)
-        json.pop(cpf, None)
+
+    dict = {}
+    with abrir_arquivo_leitura() as arquivo:
+        dict = json.load(arquivo)
+    
+    dict.pop(cpf, None)
+
+    with abrir_arquivo_escrita() as arquivo:
+        json.dump(dict, arquivo)
+
 
 
 def executar_opcao_debito():
@@ -108,8 +126,12 @@ def executar_opcao_debito():
     senha = input('Senha: ')
     valor = validando_valor('Valor:')
 
+    debitar(cpf, senha, valor)
+
+
+def debitar(cpf, senha, valor):
     dict_json = {}
-    with open(nome_arquivo_clientes(), 'r') as arquivo:
+    with abrir_arquivo_leitura() as arquivo:
         dict_json = json.load(arquivo)
 
     if dict_json[cpf]['senha'] == senha:
@@ -119,22 +141,14 @@ def executar_opcao_debito():
         executar_opcao_debito()
         return
 
-    with open(nome_arquivo_clientes(), "w") as arquivo:
+    with abrir_arquivo_escrita() as arquivo:
         json.dump(dict_json, arquivo)
 
 
 def executar_opcao_deposito():
     cpf = input('CPF: ')
     valor = validando_valor('Valor:')
-
-    dict_json = {}
-    with open(nome_arquivo_clientes(), 'r') as arquivo:
-        dict_json = json.load(arquivo)
-
-    dict_json[cpf]['valor'] += valor
-
-    with open(nome_arquivo_clientes(), "w") as arquivo:
-        json.dump(dict_json, arquivo)
+    depositar(cpf, valor)
 
 
 def executar_opcao_extrato():
@@ -148,6 +162,23 @@ def executar_opcao_transferencia():
     destino_cpf = input('CPF (Destino): ')
     valor = validando_valor('Valor:')
 
+    try:
+        debitar(origem_cpf, origem_senha, valor)
+        depositar(destino_cpf, valor)
+    except:
+        print("❌ Ocorreu um erro no processo, tente novamente")
+        executar_opcao_transferencia()
+
+    
+def depositar(cpf, valor):
+    dict_json = {}
+    with abrir_arquivo_leitura() as arquivo:
+        dict_json = json.load(arquivo)
+
+    dict_json[cpf]['valor'] += valor
+
+    with abrir_arquivo_escrita() as arquivo:
+        json.dump(dict_json, arquivo)
 
 def executar_opcao_livre():
     pass
