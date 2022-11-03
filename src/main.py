@@ -137,20 +137,28 @@ def registarar_evento(cpf, valor):
         print('ainda nao registrado!')
         run()
 
-    tarifa = 0
     literal_tarifa = dic[cpf]['tipo']
-    if tarifa == 'comum':
+
+    tarifa = 0.0
+    if literal_tarifa == 'comum' and valor < 0:
         tarifa = valor * 0.05
-    else:
+    elif literal_tarifa == 'plus' and valor < 0:
         tarifa = valor * 0.03
 
     saldo = dic[cpf]['valor']
     today = datetime.datetime.now()
     eventos = dic[cpf]['eventos']
-    lancamento = f'Data: {today.year}-{today.month}-{today.day} {today.hour}:{today.minute}:{today.second} {valor} Tarifa: {tarifa} Saldo: {saldo}'
+
+    indicator = ''
+    if valor > 0:
+        indicator = '+'
+    else:
+        valor = -valor
+        indicator = '-'
+
+    lancamento = f'Data: {today.year}-{today.month}-{today.day} {today.hour}:{today.minute}:{today.second} {indicator} {valor} Tarifa: {tarifa} Saldo: {saldo}'
     eventos.append(lancamento)
     dic[cpf]['eventos'] = eventos
-    print('DEBUG:', dic)
 
     with abrir_arquivo_escrita() as arquivo:
         json.dump(dic, arquivo)
