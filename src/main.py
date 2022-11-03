@@ -1,5 +1,6 @@
 from http import client
 import json
+import datetime
 
 
 def imprime_menu():
@@ -68,7 +69,6 @@ def cadastrarCliente(cpf, json_dict):
             run()
 
     dic[cpf] = json_dict[cpf]
-    print('DEBUG:', dic)
 
     with abrir_arquivo_escrita() as arquivo:
         json.dump(dic, arquivo)
@@ -101,6 +101,7 @@ def criaClienteDict(cpf, nome, tipo, valor, senha):
     cliente['tipo'] = tipo
     cliente['valor'] = valor
     cliente['senha'] = senha
+    cliente['eventos'] = []
 
     cliente_informacao = dict()
     cliente_informacao[cpf] = cliente
@@ -119,15 +120,40 @@ def executar_opcao_deletando_cliente():
     with abrir_arquivo_escrita() as arquivo:
         json.dump(dict, arquivo)
 
-
-
 def executar_opcao_debito():
     cpf = input('CPF: ')
     senha = input('Senha: ')
     valor = validando_valor('Valor:')
 
     debitar(cpf, senha, valor)
+    registarar_evento(cpf, valor)
 
+def registarar_evento(cpf, valor):
+    dic = {}
+    try:
+        with abrir_arquivo_leitura() as file:
+            dic = json.load(file)
+    except:
+        print('ainda nao registrado!')
+        run()
+
+    tarifa = 0
+    literal_tarifa = dic[cpf]['tipo']
+    if tarifa == 'comum':
+        tarifa = valor * 0.05
+    else:
+        tarifa = valor * 0.03
+
+    saldo = dic[cpf]['valor']
+    today = datetime.datetime.now()
+    eventos = dic[cpf]['eventos']
+    lancamento = f'Data: {today.year}-{today.month}-{today.day} {today.hour}:{today.minute}:{today.second} {valor} Tarifa: {tarifa} Saldo: {saldo}'
+    eventos.append(lancamento)
+    dic[cpf]['eventos'] = eventos
+    print('DEBUG:', dic)
+
+    with abrir_arquivo_escrita() as arquivo:
+        json.dump(dic, arquivo)
 
 def debitar(cpf, senha, valor):
     dict_json = {}
@@ -148,13 +174,26 @@ def debitar(cpf, senha, valor):
 def executar_opcao_deposito():
     cpf = input('CPF: ')
     valor = validando_valor('Valor:')
+
     depositar(cpf, valor)
+    registarar_evento(cpf, valor)
 
 
 def executar_opcao_extrato():
     cpf = input('CPF: ')
     senha = input('Senha: ')
 
+    contas = {}
+    with abrir_arquivo_leitura() as file:
+        contas = json.load(file)
+
+    print('Conta:', contas[cpf]['tipo'])
+    eventos = contas[cpf]['eventos']
+    for evento in eventos:
+        print(evento)
+
+def abrir_arquivo_transferencias_leitura():
+    return open('transferencias', "r")
 
 def executar_opcao_transferencia():
     origem_cpf = input('CPF (Origem): ')
@@ -165,6 +204,9 @@ def executar_opcao_transferencia():
     try:
         debitar(origem_cpf, origem_senha, valor)
         depositar(destino_cpf, valor)
+
+        registarar_evento(origem_cpf, -valor)
+        registarar_evento(destino_cpf, valor)
     except:
         print("❌ Ocorreu um erro no processo, tente novamente")
         executar_opcao_transferencia()
