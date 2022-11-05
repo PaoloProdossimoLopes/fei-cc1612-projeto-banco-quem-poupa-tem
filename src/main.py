@@ -69,8 +69,7 @@ def cadastrarCliente(cpf, json_dict):
 
     dic[cpf] = json_dict[cpf]
 
-    with abrir_arquivo_escrita() as arquivo:
-        json.dump(dic, arquivo)
+    save(dic)
 
 def nome_arquivo_clientes():
     return 'clientes.json'
@@ -84,13 +83,6 @@ def pega_clientes_resgistrados(file):
     clientes = json.load(arquivo)
     arquivo.close()
     return clientes
-
-def registrar_cliente(cliente_info, nome_arquivo):
-    arquivo = abrir_arquivo_escrita()
-    json_dict = json.load(arquivo)
-    json_dict.update(cliente_info)
-    json.dump(json_dict, arquivo, indent=4)
-    arquivo.close()
     
 
 def criaClienteDict(cpf, nome, tipo, valor, senha):
