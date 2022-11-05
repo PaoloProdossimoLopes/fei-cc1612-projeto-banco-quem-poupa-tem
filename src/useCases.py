@@ -2,7 +2,6 @@ import validator
 import fileManager
 import Constant
 import useCaseHelpers as useCaseHelper
-import main
 
 
 def executar_opcao_novo_cliente():
@@ -32,7 +31,7 @@ def executar_opcao_debito():
     senha = input(Constant.PASSWORD_PLACEHOLDER)
     valor = validator.validando_valor(Constant.VALUE_PLACEHOLDER)
 
-    useCaseHelper.debitar(cpf, senha, valor)
+    debitar(cpf, senha, valor)
     useCaseHelper.registarar_evento(cpf, -valor)
 
 
@@ -40,7 +39,7 @@ def executar_opcao_deposito():
     cpf = input(Constant.CPF_PLACEHOLDER)
     valor = validator.validando_valor(Constant.VALUE_PLACEHOLDER)
 
-    useCaseHelper.depositar(cpf, valor)
+    depositar(cpf, valor)
     useCaseHelper.registarar_evento(cpf, valor)
 
 
@@ -65,8 +64,8 @@ def executar_opcao_transferencia():
     valor = validator.validando_valor(Constant.VALUE_PLACEHOLDER)
 
     try:
-        useCaseHelper.debitar(origem_cpf, origem_senha, valor)
-        useCaseHelper.depositar(destino_cpf, valor)
+        debitar(origem_cpf, origem_senha, valor)
+        depositar(destino_cpf, valor)
 
         useCaseHelper.registarar_evento(origem_cpf, -valor)
         useCaseHelper.registarar_evento(destino_cpf, valor)
@@ -82,3 +81,20 @@ def executar_opcao_livre():
 def executar_opcao_sair():
     print(Constant.THANKS_MESSAGE)
     raise 
+
+def debitar(cpf, senha, valor):
+    dict_json = fileManager.load()
+
+    if dict_json[cpf][Constant.PASSWORD_KEY] == senha:
+        dict_json[cpf][Constant.VALUE_KEY] -= valor
+        fileManager.save(dict_json)
+        
+    else:
+        print(Constant.DATA_INVALID_TRY_AGAIN_ERROR_MESSAGE)
+        executar_opcao_debito()
+        return
+    
+def depositar(cpf, valor):
+    dict_json = fileManager.load()
+    dict_json[cpf][Constant.VALUE_KEY] += valor
+    fileManager.save(dict_json)

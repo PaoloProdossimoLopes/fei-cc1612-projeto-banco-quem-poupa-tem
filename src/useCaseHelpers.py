@@ -2,6 +2,7 @@ import datetime
 
 import Constant
 import fileManager
+import main
 
 def cadastrarCliente(cpf, json_dict):
     dic = {}
@@ -70,20 +71,3 @@ def chose_indicator(value):
         return Constant.POSITIVE_SYMBOL
     else:
         return Constant.NEGATIVE_SYMBOL
-
-def debitar(cpf, senha, valor):
-    dict_json = fileManager.load()
-
-    if dict_json[cpf][Constant.PASSWORD_KEY] == senha:
-        dict_json[cpf][Constant.VALUE_KEY] -= valor
-        fileManager.save(dict_json)
-        
-    else:
-        print(Constant.DATA_INVALID_TRY_AGAIN_ERROR_MESSAGE)
-        executar_opcao_debito()
-        return
-    
-def depositar(cpf, valor):
-    dict_json = fileManager.load()
-    dict_json[cpf][Constant.VALUE_KEY] += valor
-    fileManager.save(dict_json)
