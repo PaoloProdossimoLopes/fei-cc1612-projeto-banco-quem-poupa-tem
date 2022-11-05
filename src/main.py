@@ -147,9 +147,7 @@ def executar_opcao_transferencia():
     
 def depositar(cpf, valor):
     dict_json = fileManager.load()
-
     dict_json[cpf]['valor'] += valor
-
     fileManager.save(dict_json)
 
 def executar_opcao_livre():
@@ -158,6 +156,7 @@ def executar_opcao_livre():
 
 def executar_opcao_sair():
     print('👋🏼 Obrigado por usar nosos serviços! 👋🏼')
+    raise 
 
 
 def lidando_opcao(opcao):
@@ -184,7 +183,6 @@ def lidando_opcao(opcao):
 
     else:
         executar_opcao_sair()
-        raise 
 
 def escolhendo_opcao(opcao):
 
