@@ -5,12 +5,43 @@ import fileManager
 
 import main
 
+NAME_PLACEHOLDER = 'Nome: '
+CPF_PLACEHOLDER = 'CPF: '
+PASSWORD_PLACEHOLDER = 'Senha: '
+VALUE_PLACEHOLDER = 'Valor:'
+CPF_ORIGEM_PLACEHOLDER = 'CPF (Origem): '
+CPF_DESTINO_PLACEHOLDER = 'CPF (Destino): '
+PASSWORD_ORIGEM_PLACEHOLDER = 'Senha (Origem): '
+INITIAL_ACCOUNT_VALUE = 'Valor inicial da conta:'
+
+NAME_KEY = 'nome'
+TYPE_KEY = 'tipo'
+VALUE_KEY = 'valor'
+PASSWORD_KEY = 'senha'
+EVENTS_KEYS = 'eventos'
+
+ERROR_ON_REGISTER_EVENT_MESSAGE = '❌ Erro ao registrar o evento ...'
+DATA_INVALID_TRY_AGAIN_ERROR_MESSAGE = '❌ Dados da conta invalido, tente novamente!'
+DATA_IS_INVALID = '❌ Dados incorretos'
+OCCOUR_AN_ERROR_MESSAGE =  '❌ Ocorreu um erro no processo, tente novamente'
+THANKS_MESSAGE = '👋🏼 Obrigado por usar nosos serviços! 👋🏼'
+
+COMMON_TYPE_LITERAL = 'comum'
+PLUS_TYPE_LITERAL = 'plus'
+
+COMMON_TAX = 0.05
+PLUS_TAX = 0.03
+
+POSITIVE_SYMBOL = '+'
+NEGATIVE_SYMBOL = '-'
+
+
 def executar_opcao_novo_cliente():
-    nome = input('Nome: ')
-    cpf = input('CPF: ')
-    senha = input('Senha: ')
+    nome = input(NAME_PLACEHOLDER)
+    cpf = input(CPF_PLACEHOLDER)
+    senha = input(PASSWORD_PLACEHOLDER)
     tipo_conta = validator.validando_tipo_conta()
-    valor_inicial = validator.validando_valor('Valor inicial da conta:')
+    valor_inicial = validator.validando_valor(INITIAL_ACCOUNT_VALUE)
     json = criaClienteDict(cpf, nome, tipo_conta, valor_inicial, senha)
     cadastrarCliente(cpf, json)
 
@@ -33,11 +64,11 @@ def cliente_ainda_nao_esta_registardo(cpf, clientes_registrados):
 def criaClienteDict(cpf, nome, tipo, valor, senha):
     cliente = dict()
 
-    cliente['nome'] = nome
-    cliente['tipo'] = tipo
-    cliente['valor'] = valor
-    cliente['senha'] = senha
-    cliente['eventos'] = []
+    cliente[NAME_KEY] = nome
+    cliente[TYPE_KEY] = tipo
+    cliente[VALUE_KEY] = valor
+    cliente[PASSWORD_KEY] = senha
+    cliente[EVENTS_KEYS] = []
 
     cliente_informacao = dict()
     cliente_informacao[cpf] = cliente
@@ -45,7 +76,7 @@ def criaClienteDict(cpf, nome, tipo, valor, senha):
     return cliente_informacao
 
 def executar_opcao_deletando_cliente():
-    cpf = input('CPF: ')
+    cpf = input(CPF_PLACEHOLDER)
 
     dict = fileManager.load()
     
@@ -54,9 +85,9 @@ def executar_opcao_deletando_cliente():
     fileManager.save(dict)
 
 def executar_opcao_debito():
-    cpf = input('CPF: ')
-    senha = input('Senha: ')
-    valor = validator.validando_valor('Valor:')
+    cpf = input(CPF_PLACEHOLDER)
+    senha = input(PASSWORD_PLACEHOLDER)
+    valor = validator.validando_valor(VALUE_PLACEHOLDER)
 
     debitar(cpf, senha, valor)
     registarar_evento(cpf, valor)
@@ -66,77 +97,83 @@ def registarar_evento(cpf, valor):
     try:
         dic = fileManager.load()
     except:
-        print('ainda nao registrado!')
+        print(ERROR_ON_REGISTER_EVENT_MESSAGE)
         main.run()
+        return
 
-    literal_tarifa = dic[cpf]['tipo']
+    literal_tarifa = dic[cpf][TYPE_KEY]
     tarifa = chose_tax(literal_tarifa, valor)
 
-    saldo = dic[cpf]['valor']
+    saldo = dic[cpf][VALUE_KEY]
+    eventos = dic[cpf][EVENTS_KEYS]
     today = datetime.datetime.now()
-    eventos = dic[cpf]['eventos']
 
     indicator = chose_indicator(valor)
     valor = abs(valor)
 
     lancamento = f'Data: {today.year}-{today.month}-{today.day} {today.hour}:{today.minute}:{today.second} {indicator} {valor} Tarifa: {tarifa} Saldo: {saldo}'
     eventos.append(lancamento)
-    dic[cpf]['eventos'] = eventos
+    dic[cpf][EVENTS_KEYS] = eventos
 
     fileManager.save(dic)
 
 
 def chose_tax(literal, value):
-    if literal == 'comum' and value < 0:
-        return value * 0.05
-    elif literal == 'plus' and value < 0:
-        return value * 0.03
+
+    is_debit_operation = value < 0
+    if literal == COMMON_TYPE_LITERAL and is_debit_operation:
+        return value * COMMON_TAX
+    elif literal == PLUS_TYPE_LITERAL and is_debit_operation:
+        return value * PLUS_TAX
+    else:
+        return 0.0
 
 def chose_indicator(value):
     if value > 0:
-        return '+'
+        return POSITIVE_SYMBOL
     else:
-        return '-'
+        return NEGATIVE_SYMBOL
 
 def debitar(cpf, senha, valor):
     dict_json = fileManager.load()
 
-    if dict_json[cpf]['senha'] == senha:
-        dict_json[cpf]['valor'] -= valor
+    if dict_json[cpf][PASSWORD_KEY] == senha:
+        dict_json[cpf][VALUE_KEY] -= valor
+        fileManager.save(dict_json)
+        
     else:
-        print('❌ Dados da conta invalido, tente novamente!')
+        print(DATA_INVALID_TRY_AGAIN_ERROR_MESSAGE)
         executar_opcao_debito()
         return
-
-    fileManager.save(dict_json)
+    
 
 def executar_opcao_deposito():
-    cpf = input('CPF: ')
-    valor = validator.validando_valor('Valor:')
+    cpf = input(CPF_PLACEHOLDER)
+    valor = validator.validando_valor(VALUE_PLACEHOLDER)
 
     depositar(cpf, valor)
     registarar_evento(cpf, valor)
 
 
 def executar_opcao_extrato():
-    cpf = input('CPF: ')
-    senha = input('Senha: ')
+    cpf = input(CPF_PLACEHOLDER)
+    senha = input(PASSWORD_PLACEHOLDER)
 
     contas = fileManager.load()
-
-    print('Conta:', contas[cpf]['tipo'])
-    eventos = contas[cpf]['eventos']
-    for evento in eventos:
-        print(evento)
-
-def abrir_arquivo_transferencias_leitura():
-    return open('transferencias', "r")
+    if contas[cpf][PASSWORD_KEY] == senha:        
+        print('Conta:', contas[cpf][TYPE_KEY])
+        eventos = contas[cpf][EVENTS_KEYS]
+        for evento in eventos:
+            print(evento)
+    else:
+        print(DATA_IS_INVALID)
+        executar_opcao_extrato()
 
 def executar_opcao_transferencia():
-    origem_cpf = input('CPF (Origem): ')
-    origem_senha = input('Senha (Origem): ')
-    destino_cpf = input('CPF (Destino): ')
-    valor = validator.validando_valor('Valor:')
+    origem_cpf = input(CPF_ORIGEM_PLACEHOLDER)
+    origem_senha = input(PASSWORD_ORIGEM_PLACEHOLDER)
+    destino_cpf = input(CPF_DESTINO_PLACEHOLDER)
+    valor = validator.validando_valor(VALUE_PLACEHOLDER)
 
     try:
         debitar(origem_cpf, origem_senha, valor)
@@ -145,13 +182,13 @@ def executar_opcao_transferencia():
         registarar_evento(origem_cpf, -valor)
         registarar_evento(destino_cpf, valor)
     except:
-        print("❌ Ocorreu um erro no processo, tente novamente")
+        print(OCCOUR_AN_ERROR_MESSAGE)
         executar_opcao_transferencia()
 
     
 def depositar(cpf, valor):
     dict_json = fileManager.load()
-    dict_json[cpf]['valor'] += valor
+    dict_json[cpf][VALUE_KEY] += valor
     fileManager.save(dict_json)
 
 def executar_opcao_livre():
@@ -159,5 +196,5 @@ def executar_opcao_livre():
 
 
 def executar_opcao_sair():
-    print('👋🏼 Obrigado por usar nosos serviços! 👋🏼')
+    print(THANKS_MESSAGE)
     raise 
