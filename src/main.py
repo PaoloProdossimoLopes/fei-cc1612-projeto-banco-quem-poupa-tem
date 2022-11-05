@@ -70,29 +70,32 @@ def registarar_evento(cpf, valor):
         run()
 
     literal_tarifa = dic[cpf]['tipo']
-
-    tarifa = 0.0
-    if literal_tarifa == 'comum' and valor < 0:
-        tarifa = valor * 0.05
-    elif literal_tarifa == 'plus' and valor < 0:
-        tarifa = valor * 0.03
+    tarifa = chose_tax(literal_tarifa, valor)
 
     saldo = dic[cpf]['valor']
     today = datetime.datetime.now()
     eventos = dic[cpf]['eventos']
 
-    indicator = ''
-    if valor > 0:
-        indicator = '+'
-    else:
-        valor = -valor
-        indicator = '-'
+    indicator = chose_indicator(valor)
+    valor = abs(valor)
 
     lancamento = f'Data: {today.year}-{today.month}-{today.day} {today.hour}:{today.minute}:{today.second} {indicator} {valor} Tarifa: {tarifa} Saldo: {saldo}'
     eventos.append(lancamento)
     dic[cpf]['eventos'] = eventos
 
     fileManager.save(dic)
+
+def chose_tax(literal, value):
+    if literal == 'comum' and value < 0:
+        return value * 0.05
+    elif literal == 'plus' and value < 0:
+        return value * 0.03
+
+def chose_indicator(value):
+    if value > 0:
+        return '+'
+    else:
+        return '-'
 
 def debitar(cpf, senha, valor):
     dict_json = fileManager.load()
