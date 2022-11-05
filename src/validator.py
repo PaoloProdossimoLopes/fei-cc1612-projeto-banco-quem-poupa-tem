@@ -1,3 +1,26 @@
+
+def validando_valor(mensagem):
+    try:
+        valor = float(input(mensagem + ' '))
+        return valor
+    except:
+        print('❌ Valor invalido! Informe apenas numeros.')
+        return validando_valor(mensagem)
+
+
+def validando_tipo_conta():
+    tipo_conta = input('Tipo de conta: ')
+    tipo_conta = tipo_conta.lower()
+
+    if tipo_conta == 'comum' or tipo_conta == 'plus':
+        return tipo_conta
+    
+    else:
+        print('❌ Tipo de conta invalida! Escolha um tipo de conta valida (comum ou plus)')
+        validando_tipo_conta()
+
+
+
 def eh_novo_cliente(opcao):
     return opcao == 1
 

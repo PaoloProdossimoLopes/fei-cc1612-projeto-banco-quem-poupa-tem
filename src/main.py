@@ -5,33 +5,12 @@ import validator
 import fileManager
 import helpers as helper
 
-def validando_valor(mensagem):
-    try:
-        valor = float(input(mensagem + ' '))
-        return valor
-    except:
-        print('❌ Valor invalido! Informe apenas numeros.')
-        validando_valor(mensagem)
-
-
-def validando_tipo_conta():
-    tipo_conta = input('Tipo de conta: ')
-    tipo_conta = tipo_conta.lower()
-
-    if tipo_conta == 'comum' or tipo_conta == 'plus':
-        return tipo_conta
-    
-    else:
-        print('❌ Tipo de conta invalida! Escolha um tipo de conta valida (comum ou plus)')
-        validando_tipo_conta()
-
-
 def executar_opcao_novo_cliente():
     nome = input('Nome: ')
     cpf = input('CPF: ')
     senha = input('Senha: ')
-    tipo_conta = validando_tipo_conta()
-    valor_inicial = validando_valor('Valor inicial da conta:')
+    tipo_conta = validator.validando_tipo_conta()
+    valor_inicial = validator.validando_valor('Valor inicial da conta:')
     json = criaClienteDict(cpf, nome, tipo_conta, valor_inicial, senha)
     cadastrarCliente(cpf, json)
 
@@ -77,7 +56,7 @@ def executar_opcao_deletando_cliente():
 def executar_opcao_debito():
     cpf = input('CPF: ')
     senha = input('Senha: ')
-    valor = validando_valor('Valor:')
+    valor = validator.validando_valor('Valor:')
 
     debitar(cpf, senha, valor)
     registarar_evento(cpf, valor)
@@ -129,7 +108,7 @@ def debitar(cpf, senha, valor):
 
 def executar_opcao_deposito():
     cpf = input('CPF: ')
-    valor = validando_valor('Valor:')
+    valor = validator.validando_valor('Valor:')
 
     depositar(cpf, valor)
     registarar_evento(cpf, valor)
@@ -153,7 +132,7 @@ def executar_opcao_transferencia():
     origem_cpf = input('CPF (Origem): ')
     origem_senha = input('Senha (Origem): ')
     destino_cpf = input('CPF (Destino): ')
-    valor = validando_valor('Valor:')
+    valor = validator.validando_valor('Valor:')
 
     try:
         debitar(origem_cpf, origem_senha, valor)
