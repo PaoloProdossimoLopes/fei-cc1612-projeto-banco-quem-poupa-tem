@@ -1,1 +1,1 @@
-{"123": {"nome": "Paolo", "tipo": null, "valor": -490.0, "senha": "123", "eventos": ["Data: 2022-11-5 20:38:11 - 500.0 Tarifa: 0.0 Saldo: -490.0"]}, "456": {"nome": "Leticia", "tipo": "comum", "valor": 530.0, "senha": "456", "eventos": ["Data: 2022-11-5 20:38:11 + 500.0 Tarifa: 0.0 Saldo: 530.0"]}}
+{"123": {"nome": "Paolo", "tipo": "plus", "valor": -270.0, "senha": "123", "eventos": ["Data: 2022-11-5 20:45:37 + 300.0 Tarifa: 0.0 Saldo: -270.0"]}, "456": {"nome": "Leticia", "tipo": null, "valor": -30.0, "senha": "456", "eventos": []}}
