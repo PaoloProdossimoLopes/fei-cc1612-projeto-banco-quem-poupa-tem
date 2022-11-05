@@ -1,6 +1,7 @@
-from http import client
 import json
 import datetime
+
+import validator
 
 
 def imprime_menu():
@@ -61,12 +62,10 @@ def executar_opcao_novo_cliente():
 def cadastrarCliente(cpf, json_dict):
     dic = {}
     try:
-        with abrir_arquivo_leitura() as file:
-            dic = json.load(file)
+        dic = load()
     except:
-        with abrir_arquivo_escrita() as arquivo:
-            json.dump(json_dict, arquivo)
-            run()
+        save(json_dict)
+        run()
 
     dic[cpf] = json_dict[cpf]
 
@@ -111,14 +110,11 @@ def criaClienteDict(cpf, nome, tipo, valor, senha):
 def executar_opcao_deletando_cliente():
     cpf = input('CPF: ')
 
-    dict = {}
-    with abrir_arquivo_leitura() as arquivo:
-        dict = json.load(arquivo)
+    dict = load()
     
     dict.pop(cpf, None)
 
-    with abrir_arquivo_escrita() as arquivo:
-        json.dump(dict, arquivo)
+    save(dict)
 
 def executar_opcao_debito():
     cpf = input('CPF: ')
@@ -131,8 +127,7 @@ def executar_opcao_debito():
 def registarar_evento(cpf, valor):
     dic = {}
     try:
-        with abrir_arquivo_leitura() as file:
-            dic = json.load(file)
+        dic = load()
     except:
         print('ainda nao registrado!')
         run()
@@ -160,13 +155,10 @@ def registarar_evento(cpf, valor):
     eventos.append(lancamento)
     dic[cpf]['eventos'] = eventos
 
-    with abrir_arquivo_escrita() as arquivo:
-        json.dump(dic, arquivo)
+    save(dic)
 
 def debitar(cpf, senha, valor):
-    dict_json = {}
-    with abrir_arquivo_leitura() as arquivo:
-        dict_json = json.load(arquivo)
+    dict_json = load()
 
     if dict_json[cpf]['senha'] == senha:
         dict_json[cpf]['valor'] -= valor
@@ -175,9 +167,17 @@ def debitar(cpf, senha, valor):
         executar_opcao_debito()
         return
 
-    with abrir_arquivo_escrita() as arquivo:
-        json.dump(dict_json, arquivo)
+    save(dict_json)
 
+def load():
+    dict_json = {}
+    with abrir_arquivo_leitura() as arquivo:
+        dict_json = json.load(arquivo)
+    return dict_json
+
+def save(new):
+    with abrir_arquivo_escrita() as arquivo:
+        json.dump(new, arquivo)
 
 def executar_opcao_deposito():
     cpf = input('CPF: ')
@@ -191,9 +191,7 @@ def executar_opcao_extrato():
     cpf = input('CPF: ')
     senha = input('Senha: ')
 
-    contas = {}
-    with abrir_arquivo_leitura() as file:
-        contas = json.load(file)
+    contas = load()
 
     print('Conta:', contas[cpf]['tipo'])
     eventos = contas[cpf]['eventos']
@@ -221,14 +219,11 @@ def executar_opcao_transferencia():
 
     
 def depositar(cpf, valor):
-    dict_json = {}
-    with abrir_arquivo_leitura() as arquivo:
-        dict_json = json.load(arquivo)
+    dict_json = load()
 
     dict_json[cpf]['valor'] += valor
 
-    with abrir_arquivo_escrita() as arquivo:
-        json.dump(dict_json, arquivo)
+    save(dict_json)
 
 def executar_opcao_livre():
     pass
@@ -238,54 +233,26 @@ def executar_opcao_sair():
     print('👋🏼 Obrigado por usar nosos serviços! 👋🏼')
 
 
-def eh_novo_cliente(opcao):
-    return opcao == 1
-
-
-def eh_deletat_cliente(opcao):
-    return opcao == 2
-
-
-def eh_debito(opcao):
-    return opcao == 3
-
-
-def eh_deposito(opcao):
-    return opcao == 4
-
-
-def eh_extrato(opcao):
-    return opcao == 5
-
-
-def eh_transferencia(opcao):
-    return opcao == 6
-
-
-def eh_opcao_livre(opcao):
-    return opcao == 7
-
-
 def lidando_opcao(opcao):
-    if eh_novo_cliente(opcao):
+    if validator.eh_novo_cliente(opcao):
         executar_opcao_novo_cliente()
 
-    elif eh_deletat_cliente(opcao):
+    elif validator.eh_deletat_cliente(opcao):
         executar_opcao_deletando_cliente()
 
-    elif eh_debito(opcao):
+    elif validator.eh_debito(opcao):
         executar_opcao_debito()
 
-    elif eh_deposito(opcao):
+    elif validator.eh_deposito(opcao):
         executar_opcao_deposito()
 
-    elif eh_extrato(opcao):
+    elif validator.eh_extrato(opcao):
         executar_opcao_extrato()
 
-    elif eh_transferencia(opcao):
+    elif validator.eh_transferencia(opcao):
         executar_opcao_transferencia()
 
-    elif eh_opcao_livre(opcao):
+    elif validator.eh_opcao_livre(opcao):
         executar_opcao_livre()
 
     else:
