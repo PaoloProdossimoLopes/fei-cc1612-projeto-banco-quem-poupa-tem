@@ -2,6 +2,7 @@ import json
 import datetime
 
 import validator
+import fileManager
 
 
 def imprime_menu():
@@ -19,14 +20,6 @@ def imprime_menu():
     ********************************
     '''
     print(header)
-
-
-def abrir_arquivo_leitura():
-    return open(nome_arquivo_clientes(), "r")
-
-
-def abrir_arquivo_escrita():
-    return open(nome_arquivo_clientes(), "w")
 
 
 def validando_valor(mensagem):
@@ -62,28 +55,18 @@ def executar_opcao_novo_cliente():
 def cadastrarCliente(cpf, json_dict):
     dic = {}
     try:
-        dic = load()
+        dic = fileManager.load()
     except:
-        save(json_dict)
+        fileManager.save(json_dict)
         run()
 
     dic[cpf] = json_dict[cpf]
 
-    save(dic)
-
-def nome_arquivo_clientes():
-    return 'clientes.json'
+    fileManager.save(dic)
 
 def cliente_ainda_nao_esta_registardo(cpf, clientes_registrados):
     cpfs = clientes_registrados.keys()
     return (cpf in cpfs) == False
-
-def pega_clientes_resgistrados(file):
-    arquivo = abrir_arquivo_leitura()
-    clientes = json.load(arquivo)
-    arquivo.close()
-    return clientes
-    
 
 def criaClienteDict(cpf, nome, tipo, valor, senha):
     cliente = dict()
@@ -102,11 +85,11 @@ def criaClienteDict(cpf, nome, tipo, valor, senha):
 def executar_opcao_deletando_cliente():
     cpf = input('CPF: ')
 
-    dict = load()
+    dict = fileManager.load()
     
     dict.pop(cpf, None)
 
-    save(dict)
+    fileManager.save(dict)
 
 def executar_opcao_debito():
     cpf = input('CPF: ')
@@ -119,7 +102,7 @@ def executar_opcao_debito():
 def registarar_evento(cpf, valor):
     dic = {}
     try:
-        dic = load()
+        dic = fileManager.load()
     except:
         print('ainda nao registrado!')
         run()
@@ -147,10 +130,10 @@ def registarar_evento(cpf, valor):
     eventos.append(lancamento)
     dic[cpf]['eventos'] = eventos
 
-    save(dic)
+    fileManager.save(dic)
 
 def debitar(cpf, senha, valor):
-    dict_json = load()
+    dict_json = fileManager.load()
 
     if dict_json[cpf]['senha'] == senha:
         dict_json[cpf]['valor'] -= valor
@@ -159,17 +142,7 @@ def debitar(cpf, senha, valor):
         executar_opcao_debito()
         return
 
-    save(dict_json)
-
-def load():
-    dict_json = {}
-    with abrir_arquivo_leitura() as arquivo:
-        dict_json = json.load(arquivo)
-    return dict_json
-
-def save(new):
-    with abrir_arquivo_escrita() as arquivo:
-        json.dump(new, arquivo)
+    fileManager.save(dict_json)
 
 def executar_opcao_deposito():
     cpf = input('CPF: ')
@@ -183,7 +156,7 @@ def executar_opcao_extrato():
     cpf = input('CPF: ')
     senha = input('Senha: ')
 
-    contas = load()
+    contas = fileManager.load()
 
     print('Conta:', contas[cpf]['tipo'])
     eventos = contas[cpf]['eventos']
@@ -211,11 +184,11 @@ def executar_opcao_transferencia():
 
     
 def depositar(cpf, valor):
-    dict_json = load()
+    dict_json = fileManager.load()
 
     dict_json[cpf]['valor'] += valor
 
-    save(dict_json)
+    fileManager.save(dict_json)
 
 def executar_opcao_livre():
     pass
