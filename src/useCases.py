@@ -20,7 +20,7 @@ def recieve_cpf():
     if validator.validate_cpf(cpf):
         return cpf
     else:
-        log.error('CPF invalido!')
+        log.error(Constant.CPF_INVALID)
         return recieve_cpf()
 
 def cliente_ainda_nao_esta_registardo(cpf, clientes_registrados):
@@ -75,7 +75,7 @@ def executar_opcao_transferencia():
     try:
         debitar(origem_cpf, origem_senha, valor)
         depositar(destino_cpf, valor)
-        log.success(f'Transferencia realizada com successo!')
+        log.success(Constant.TRANSFER_SUCCEDED)
 
         useCaseHelper.registarar_evento(origem_cpf, -valor)
         useCaseHelper.registarar_evento(destino_cpf, valor)
@@ -98,7 +98,7 @@ def debitar(cpf, senha, valor):
     if dict_json[cpf][Constant.PASSWORD_KEY] == senha:
         dict_json[cpf][Constant.VALUE_KEY] -= valor
         fileManager.save(dict_json)
-        log.success(f'Debito realizado com sucesso!')
+        log.success(Constant.DEBIT_SUCCEDED)
         
     else:
         log.error(Constant.DATA_INVALID_TRY_AGAIN_ERROR_MESSAGE)
@@ -109,4 +109,4 @@ def depositar(cpf, valor):
     dict_json = fileManager.load()
     dict_json[cpf][Constant.VALUE_KEY] += valor
     fileManager.save(dict_json)
-    log.success(f'Deposito realizado com sucesso!')
+    log.success(Constant.DEPOSIT_SUCCEDED)

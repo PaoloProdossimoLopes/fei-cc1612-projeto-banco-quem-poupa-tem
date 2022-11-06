@@ -17,6 +17,11 @@ RANGE_NUMBERS_OPTIONS_ERROR_MESSAGE = 'Opção invalida! Escolha um numero entre
 
 SUCCESS_USER_REGISTER_MESSAGE = 'Usuario cadastrado com sucesso!'
 SUCCESS_EVENT_REGISTER_MESSAGE = 'Evento registrado com sucesso!'
+DEPOSIT_SUCCEDED = 'Deposito realizado com sucesso!'
+DEBIT_SUCCEDED = 'Debito realizado com sucesso!'
+TRANSFER_SUCCEDED = 'Transferencia realizada com successo!'
+
+CPF_INVALID = 'CPF invalido!'
 
 NAME_KEY = 'nome'
 TYPE_KEY = 'tipo'
