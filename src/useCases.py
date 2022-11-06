@@ -5,15 +5,24 @@ import Logger as log
 import useCaseHelpers as useCaseHelper
 import helpers as helper
 
+COSTUMER_ALREADY_REGISTER = 'Usuario ja esta cadastrado'
+DELETION_PROCESS_SUCCEDED = 'Usuario deletado com successo'
 
 def executar_opcao_novo_cliente():
     nome = input(Constant.NAME_PLACEHOLDER)
     cpf = recieve_cpf()
     senha = input(Constant.PASSWORD_PLACEHOLDER)
-    tipo_conta = validator.validando_tipo_conta()
-    valor_inicial = validator.validando_valor(Constant.INITIAL_ACCOUNT_VALUE)
-    json = useCaseHelper.criaClienteDict(cpf, nome, tipo_conta, valor_inicial, senha)
-    useCaseHelper.cadastrarCliente(cpf, json)
+
+    if costumer_exist(cpf):
+        log.error(COSTUMER_ALREADY_REGISTER)
+        executar_opcao_novo_cliente()
+        return
+
+    else:
+        tipo_conta = validator.validando_tipo_conta()
+        valor_inicial = validator.validando_valor(Constant.INITIAL_ACCOUNT_VALUE)
+        json = useCaseHelper.criaClienteDict(cpf, nome, tipo_conta, valor_inicial, senha)
+        useCaseHelper.cadastrarCliente(cpf, json)
 
 def recieve_cpf():
     cpf = input(Constant.CPF_PLACEHOLDER)
@@ -30,32 +39,49 @@ def cliente_ainda_nao_esta_registardo(cpf, clientes_registrados):
 def executar_opcao_deletando_cliente():
     cpf = recieve_cpf()
 
-    dict = fileManager.load()
-    
-    dict.pop(cpf, None)
-
-    fileManager.save(dict)
+    if not costumer_exist(cpf):
+        log.error(Constant.USER_NON_EXIST_ERROR_MESSAGE)
+        executar_opcao_deletando_cliente()
+        return
+    else:
+        dict = fileManager.load()
+        dict.pop(cpf, None)
+        fileManager.save(dict)
+        log.success(DELETION_PROCESS_SUCCEDED)
 
 def executar_opcao_debito():
     cpf = recieve_cpf()
     senha = input(Constant.PASSWORD_PLACEHOLDER)
     valor = validator.validando_valor(Constant.VALUE_PLACEHOLDER)
 
-    debitar(cpf, senha, valor)
-    useCaseHelper.registarar_evento(cpf, -valor)
+    if not costumer_exist(cpf):
+        log.error(Constant.USER_NON_EXIST_ERROR_MESSAGE)
+        executar_opcao_debito()
+    else:
+        debitar(cpf, senha, valor)
+        useCaseHelper.registarar_evento(cpf, -valor)
 
 
 def executar_opcao_deposito():
     cpf = recieve_cpf()
     valor = validator.validando_valor(Constant.VALUE_PLACEHOLDER)
 
-    depositar(cpf, valor)
-    useCaseHelper.registarar_evento(cpf, valor)
+    if not costumer_exist(cpf):
+        log.error(Constant.USER_NON_EXIST_ERROR_MESSAGE)
+        executar_opcao_deposito()
+    else:
+        depositar(cpf, valor)
+        useCaseHelper.registarar_evento(cpf, valor)
 
 
 def executar_opcao_extrato():
     cpf = recieve_cpf()
     senha = input(Constant.PASSWORD_PLACEHOLDER)
+
+    if not costumer_exist(cpf):
+        log.error(Constant.USER_NON_EXIST_ERROR_MESSAGE)
+        executar_opcao_extrato()
+        return
 
     contas = fileManager.load()
     if contas[cpf][Constant.PASSWORD_KEY] == senha: 
@@ -71,6 +97,11 @@ def executar_opcao_transferencia():
     origem_senha = input(Constant.PASSWORD_ORIGEM_PLACEHOLDER)
     destino_cpf = input(Constant.CPF_DESTINO_PLACEHOLDER)
     valor = validator.validando_valor(Constant.VALUE_PLACEHOLDER)
+
+    if (not costumer_exist(origem_cpf)) or (not costumer_exist(destino_cpf)):
+        log.error(Constant.USER_NON_EXIST_ERROR_MESSAGE)
+        executar_opcao_transferencia()
+        return
 
     try:
         debitar(origem_cpf, origem_senha, valor)
@@ -90,7 +121,7 @@ def executar_opcao_livre():
     new_password = input(Constant.NEW_PASSWORD_PLACEHOLDER)
     dict = fileManager.load()
 
-    if not costumer_exist(cpf):git 
+    if not costumer_exist(cpf):
         log.error(Constant.USER_NON_EXIST_ERROR_MESSAGE)
         executar_opcao_livre()
 
