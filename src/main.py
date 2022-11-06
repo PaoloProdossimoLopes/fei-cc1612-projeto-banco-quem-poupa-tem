@@ -1,6 +1,7 @@
 import validator
 import helpers as helper
 import useCases as useCase
+import Logger as log
 
 
 def lidando_opcao(opcao):
@@ -38,7 +39,7 @@ def escolhendo_opcao(opcao):
         except: return CODIGO_PARA_LOOP
 
     else:
-        print('❌ Opção invalida! Escolha um numero entre 0 - 7.')   
+        log.error('❌ Opção invalida! Escolha um numero entre 0 - 7.')   
         recebendo_opcao()
 
 
@@ -48,7 +49,7 @@ def recebendo_opcao():
         return escolhendo_opcao(opcao)
 
     except:
-        print('❌ Opção invalida! Escolha apenas numeros.')
+        log.error('❌ Opção invalida! Escolha apenas numeros.')
         recebendo_opcao()  
 
 

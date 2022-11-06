@@ -2,6 +2,7 @@ import datetime
 
 import Constant
 import fileManager
+import Logger as log
 import main
 
 def cadastrarCliente(cpf, json_dict):
@@ -13,8 +14,10 @@ def cadastrarCliente(cpf, json_dict):
         main.run()
 
     dic[cpf] = json_dict[cpf]
+    username = dic[cpf][Constant.NAME_KEY]
 
     fileManager.save(dic)
+    log.success(f'Usuario cadastrado com sucesso!')
 
 def criaClienteDict(cpf, nome, tipo, valor, senha):
     cliente = dict()
@@ -35,7 +38,7 @@ def registarar_evento(cpf, valor):
     try:
         dic = fileManager.load()
     except:
-        print(Constant.ERROR_ON_REGISTER_EVENT_MESSAGE)
+        log.error(Constant.ERROR_ON_REGISTER_EVENT_MESSAGE)
         main.run()
         return
 
@@ -54,6 +57,7 @@ def registarar_evento(cpf, valor):
     dic[cpf][Constant.EVENTS_KEYS] = eventos
 
     fileManager.save(dic)
+    log.success(f'Evento registrado com sucesso!')
 
 
 def chose_tax(literal, value):

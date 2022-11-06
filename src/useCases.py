@@ -1,7 +1,9 @@
 import validator
 import fileManager
 import Constant
+import Logger as log
 import useCaseHelpers as useCaseHelper
+import helpers as helper
 
 
 def executar_opcao_novo_cliente():
@@ -48,13 +50,12 @@ def executar_opcao_extrato():
     senha = input(Constant.PASSWORD_PLACEHOLDER)
 
     contas = fileManager.load()
-    if contas[cpf][Constant.PASSWORD_KEY] == senha:        
-        print('Conta:', contas[cpf][Constant.TYPE_KEY])
+    if contas[cpf][Constant.PASSWORD_KEY] == senha: 
         eventos = contas[cpf][Constant.EVENTS_KEYS]
-        for evento in eventos:
-            print(evento)
+        tipo_conta = contas[cpf][Constant.TYPE_KEY]
+        helper.imprime_extrato(tipo_conta, eventos)
     else:
-        print(Constant.DATA_IS_INVALID)
+        log.error(Constant.DATA_IS_INVALID)
         executar_opcao_extrato()
 
 def executar_opcao_transferencia():
@@ -66,11 +67,12 @@ def executar_opcao_transferencia():
     try:
         debitar(origem_cpf, origem_senha, valor)
         depositar(destino_cpf, valor)
+        log.success(f'Transferencia realizada com successo!')
 
         useCaseHelper.registarar_evento(origem_cpf, -valor)
         useCaseHelper.registarar_evento(destino_cpf, valor)
     except:
-        print(Constant.OCCOUR_AN_ERROR_MESSAGE)
+        log.error(Constant.OCCOUR_AN_ERROR_MESSAGE)
         executar_opcao_transferencia()
 
 
@@ -79,7 +81,7 @@ def executar_opcao_livre():
 
 
 def executar_opcao_sair():
-    print(Constant.THANKS_MESSAGE)
+    log.log(Constant.THANKS_MESSAGE)
     raise 
 
 def debitar(cpf, senha, valor):
@@ -88,9 +90,10 @@ def debitar(cpf, senha, valor):
     if dict_json[cpf][Constant.PASSWORD_KEY] == senha:
         dict_json[cpf][Constant.VALUE_KEY] -= valor
         fileManager.save(dict_json)
+        log.success(f'Debito realizado com sucesso!')
         
     else:
-        print(Constant.DATA_INVALID_TRY_AGAIN_ERROR_MESSAGE)
+        log.error(Constant.DATA_INVALID_TRY_AGAIN_ERROR_MESSAGE)
         executar_opcao_debito()
         return
     
@@ -98,3 +101,4 @@ def depositar(cpf, valor):
     dict_json = fileManager.load()
     dict_json[cpf][Constant.VALUE_KEY] += valor
     fileManager.save(dict_json)
+    log.success(f'Deposito realizado com sucesso!')

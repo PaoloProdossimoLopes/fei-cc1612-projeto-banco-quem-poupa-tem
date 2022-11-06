@@ -1,3 +1,6 @@
+import Logger as log
+import Constant
+
 def imprime_menu():
     header = '''
     ********************************
@@ -12,4 +15,18 @@ def imprime_menu():
     0 - Sair
     ********************************
     '''
-    print(header)
+    log.log()
+    log.log(header)
+
+def imprime_extrato(tipo_conta, eventos):
+    print('\n** Extrato **')
+    print('*' * 14)
+    print('🏷 Conta:', tipo_conta)
+    
+    for evento in eventos:
+        if Constant.POSITIVE_SYMBOL in evento:
+            log.incame(evento)
+        else:
+            log.spend(evento)
+
+    log.log(f'* FIM DO EXTRATO *****\n')
