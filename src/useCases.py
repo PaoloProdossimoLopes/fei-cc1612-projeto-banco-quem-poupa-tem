@@ -18,7 +18,6 @@ def executar_opcao_novo_cliente():
 def recieve_cpf():
     cpf = input(Constant.CPF_PLACEHOLDER)
     if validator.validate_cpf(cpf):
-        print('none')
         return cpf
     else:
         log.error('CPF invalido!')

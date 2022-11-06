@@ -1,4 +1,5 @@
 import Logger as log
+import Constant
 
 
 def validando_valor(mensagem):
@@ -6,53 +7,53 @@ def validando_valor(mensagem):
         valor = float(input(mensagem + ' '))
         return valor
     except:
-        print('❌ Valor invalido! Informe apenas numeros.')
+        log.error(Constant.ONLY_NUMBER_ERRORMESSAGE)
         return validando_valor(mensagem)
 
 
 def validando_tipo_conta():
-    tipo_conta = input('Tipo de conta: ')
+    tipo_conta = input(Constant.TYPE_ACCOUNT_PLACEHOLDER)
     tipo_conta = tipo_conta.lower()
 
-    if tipo_conta == 'comum' or tipo_conta == 'plus':
+    if tipo_conta == Constant.COMMON_TYPE_LITERAL or tipo_conta == Constant.PLUS_TYPE_LITERAL:
         return tipo_conta
     
     else:
-        log.error('Tipo de conta invalida! Escolha um tipo de conta valida (comum ou plus)')
+        log.error(Constant.ACCOUNT_TYPE_ERROR_MESSAGE)
         validando_tipo_conta()
 
 def validate_cpf(cpf):
-    if (('-' in cpf) or ('.' in cpf)):
-        log.error('Coloque apenas numeros')
+    if ((Constant.DOT_SYMBOL in cpf) or (Constant.DASH_SYMBOL in cpf)):
+        log.error(Constant.ONLY_NUMBER_ERROR_MESSAGE)
         return False
-    elif len(cpf) < 11:
+    elif len(cpf) < Constant.CPF_SIZE:
         return False   
     else:
         return True
 
 def eh_novo_cliente(opcao):
-    return opcao == 1
+    return opcao == Constant.OPTION_REGISTER_CODE
 
 
 def eh_deletat_cliente(opcao):
-    return opcao == 2
+    return opcao == Constant.OPTION_DELETE_CODE
 
 
 def eh_debito(opcao):
-    return opcao == 3
+    return opcao == Constant.OPTION_DEBIT_CODE
 
 
 def eh_deposito(opcao):
-    return opcao == 4
+    return opcao == Constant.OPTION_DEPOSIT_CODE
 
 
 def eh_extrato(opcao):
-    return opcao == 5
+    return opcao == Constant.OPTION_BANK_STATEMENT_CODE
 
 
 def eh_transferencia(opcao):
-    return opcao == 6
+    return opcao == Constant.OPTION_TRANSFER_CODE
 
 
 def eh_opcao_livre(opcao):
-    return opcao == 7
+    return opcao == Constant.OPTION_LIVRE_CODE
