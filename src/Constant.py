@@ -8,6 +8,11 @@ PASSWORD_ORIGEM_PLACEHOLDER = 'Senha (Origem): '
 INITIAL_ACCOUNT_VALUE = 'Valor inicial da conta:'
 TYPE_ACCOUNT_PLACEHOLDER = 'Tipo de conta: '
 ACCOUNT_TYPE_ERROR_MESSAGE = 'Tipo de conta invalida! Escolha um tipo de conta valida (comum ou plus)'
+OLD_PASSWORD_PLACEHOLDER = 'Senha antiga: '
+NEW_PASSWORD_PLACEHOLDER = 'Nova senha: '
+USER_NON_EXIST_ERROR_MESSAGE = 'Usuario nao existe'
+OLD_PASSWORD_NOT_EQUAL_ERROR_MESSAGE = 'A senha nova nao pode ser igual a anterior'
+SUCCESS_CHAMGE_PASSWORD_PROCESS_MESSAGE = 'Senha alterada com sucesso!'
 
 EVENT_FORMAT = 'Data: %d-%d-%d  %d:%d:%d  (%s  %.2f)  Taxa: %.2f  Saldo: %.2f'
 

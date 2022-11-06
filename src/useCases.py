@@ -28,7 +28,7 @@ def cliente_ainda_nao_esta_registardo(cpf, clientes_registrados):
     return (cpf in cpfs) == False
 
 def executar_opcao_deletando_cliente():
-    cpf = input(Constant.CPF_PLACEHOLDER)
+    cpf = recieve_cpf()
 
     dict = fileManager.load()
     
@@ -37,7 +37,7 @@ def executar_opcao_deletando_cliente():
     fileManager.save(dict)
 
 def executar_opcao_debito():
-    cpf = input(Constant.CPF_PLACEHOLDER)
+    cpf = recieve_cpf()
     senha = input(Constant.PASSWORD_PLACEHOLDER)
     valor = validator.validando_valor(Constant.VALUE_PLACEHOLDER)
 
@@ -46,7 +46,7 @@ def executar_opcao_debito():
 
 
 def executar_opcao_deposito():
-    cpf = input(Constant.CPF_PLACEHOLDER)
+    cpf = recieve_cpf()
     valor = validator.validando_valor(Constant.VALUE_PLACEHOLDER)
 
     depositar(cpf, valor)
@@ -54,7 +54,7 @@ def executar_opcao_deposito():
 
 
 def executar_opcao_extrato():
-    cpf = input(Constant.CPF_PLACEHOLDER)
+    cpf = recieve_cpf()
     senha = input(Constant.PASSWORD_PLACEHOLDER)
 
     contas = fileManager.load()
@@ -85,8 +85,32 @@ def executar_opcao_transferencia():
 
 
 def executar_opcao_livre():
-    pass
+    cpf = recieve_cpf()
+    old_password = input(Constant.OLD_PASSWORD_PLACEHOLDER)
+    new_password = input(Constant.NEW_PASSWORD_PLACEHOLDER)
+    dict = fileManager.load()
 
+    if not costumer_exist(cpf):git 
+        log.error(Constant.USER_NON_EXIST_ERROR_MESSAGE)
+        executar_opcao_livre()
+
+    elif dict[cpf][Constant.PASSWORD_KEY] == new_password:
+        log.error(Constant.OLD_PASSWORD_NOT_EQUAL_ERROR_MESSAGE)
+        executar_opcao_livre()
+
+    elif dict[cpf][Constant.PASSWORD_KEY] == old_password :
+        dict[cpf][Constant.PASSWORD_KEY] = new_password
+        fileManager.save(dict)
+        log.success(Constant.SUCCESS_CHAMGE_PASSWORD_PROCESS_MESSAGE)
+
+    else:
+        log.error(Constant.DATA_IS_INVALID)
+        executar_opcao_livre()
+
+
+def costumer_exist(cpf):
+    costumer_list = fileManager.load()
+    return (cpf in costumer_list.keys())
 
 def executar_opcao_sair():
     log.log(Constant.THANKS_MESSAGE)

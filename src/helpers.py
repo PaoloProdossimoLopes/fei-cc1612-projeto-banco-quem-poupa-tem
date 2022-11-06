@@ -11,7 +11,7 @@ def imprime_menu():
     4 - Depósito
     5 - Extrato
     6 - Transferencia entre contas
-    7 - 'Operação livre'
+    7 - 'Operação livre' (Mudar senha)
     0 - Sair
     ********************************
     '''
