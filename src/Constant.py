@@ -21,6 +21,8 @@ DEPOSIT_SUCCEDED = 'Deposito realizado com sucesso!'
 DEBIT_SUCCEDED = 'Debito realizado com sucesso!'
 TRANSFER_SUCCEDED = 'Transferencia realizada com successo!'
 
+REGISTER_USER_FAILED_MESSAGE = 'ERROR AO REGISTAR USUARIO'
+
 CPF_INVALID = 'CPF invalido!'
 
 NAME_KEY = 'nome'

@@ -11,6 +11,7 @@ def cadastrarCliente(cpf, json_dict):
         dic = fileManager.load()
     except:
         fileManager.save(json_dict)
+        log.error(Constant.REGISTER_USER_FAILED_MESSAGE)
         main.run()
 
     dic[cpf] = json_dict[cpf]
