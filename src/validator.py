@@ -1,3 +1,5 @@
+import Logger as log
+
 
 def validando_valor(mensagem):
     try:
@@ -16,10 +18,17 @@ def validando_tipo_conta():
         return tipo_conta
     
     else:
-        print('❌ Tipo de conta invalida! Escolha um tipo de conta valida (comum ou plus)')
+        log.error('Tipo de conta invalida! Escolha um tipo de conta valida (comum ou plus)')
         validando_tipo_conta()
 
-
+def validate_cpf(cpf):
+    if (('-' in cpf) or ('.' in cpf)):
+        log.error('Coloque apenas numeros')
+        return False
+    elif len(cpf) < 11:
+        return False   
+    else:
+        return True
 
 def eh_novo_cliente(opcao):
     return opcao == 1

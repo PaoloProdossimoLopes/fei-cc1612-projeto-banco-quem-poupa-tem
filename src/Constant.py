@@ -7,6 +7,15 @@ CPF_DESTINO_PLACEHOLDER = 'CPF (Destino): '
 PASSWORD_ORIGEM_PLACEHOLDER = 'Senha (Origem): '
 INITIAL_ACCOUNT_VALUE = 'Valor inicial da conta:'
 
+EVENT_FORMAT = 'Data: %d-%d-%d  %d:%d:%d  (%s  %.2f)  Taxa: %.2f  Saldo: %.2f'
+
+CHOSE_OPTION_PLACEGOLDER = 'Oque deseja realizar no banco? '
+ONLY_NUMBER_ERRORMESSAGE = 'Opção invalida! Escolha apenas numeros.'
+RANGE_NUMBERS_OPTIONS_ERROR_MESSAGE = 'Opção invalida! Escolha um numero entre 0 - 7.'
+
+SUCCESS_USER_REGISTER_MESSAGE = 'Usuario cadastrado com sucesso!'
+SUCCESS_EVENT_REGISTER_MESSAGE = 'Evento registrado com sucesso!'
+
 NAME_KEY = 'nome'
 TYPE_KEY = 'tipo'
 VALUE_KEY = 'valor'

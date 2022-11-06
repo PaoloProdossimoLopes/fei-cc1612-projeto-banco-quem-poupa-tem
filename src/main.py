@@ -2,6 +2,7 @@ import validator
 import helpers as helper
 import useCases as useCase
 import Logger as log
+import Constant
 
 
 def lidando_opcao(opcao):
@@ -39,17 +40,17 @@ def escolhendo_opcao(opcao):
         except: return CODIGO_PARA_LOOP
 
     else:
-        log.error('❌ Opção invalida! Escolha um numero entre 0 - 7.')   
+        log.error(Constant.RANGE_NUMBERS_OPTIONS_ERROR_MESSAGE)   
         recebendo_opcao()
 
 
 def recebendo_opcao():
     try:
-        opcao = int(input('Oque deseja realizar no banco? '))
+        opcao = int(input(Constant.CHOSE_OPTION_PLACEGOLDER))
         return escolhendo_opcao(opcao)
 
     except:
-        log.error('❌ Opção invalida! Escolha apenas numeros.')
+        log.error(Constant.ONLY_NUMBER_ERRORMESSAGE)
         recebendo_opcao()  
 
 
@@ -57,8 +58,6 @@ def run():
     while True:
         helper.imprime_menu()
         if recebendo_opcao() != None: break
-        
-
 
 if __name__ == '__main__':
     run()

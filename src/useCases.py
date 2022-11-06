@@ -8,12 +8,21 @@ import helpers as helper
 
 def executar_opcao_novo_cliente():
     nome = input(Constant.NAME_PLACEHOLDER)
-    cpf = input(Constant.CPF_PLACEHOLDER)
+    cpf = recieve_cpf()
     senha = input(Constant.PASSWORD_PLACEHOLDER)
     tipo_conta = validator.validando_tipo_conta()
     valor_inicial = validator.validando_valor(Constant.INITIAL_ACCOUNT_VALUE)
     json = useCaseHelper.criaClienteDict(cpf, nome, tipo_conta, valor_inicial, senha)
     useCaseHelper.cadastrarCliente(cpf, json)
+
+def recieve_cpf():
+    cpf = input(Constant.CPF_PLACEHOLDER)
+    if validator.validate_cpf(cpf):
+        print('none')
+        return cpf
+    else:
+        log.error('CPF invalido!')
+        return recieve_cpf()
 
 def cliente_ainda_nao_esta_registardo(cpf, clientes_registrados):
     cpfs = clientes_registrados.keys()

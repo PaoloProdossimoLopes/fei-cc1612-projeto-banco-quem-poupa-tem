@@ -14,10 +14,9 @@ def cadastrarCliente(cpf, json_dict):
         main.run()
 
     dic[cpf] = json_dict[cpf]
-    username = dic[cpf][Constant.NAME_KEY]
 
     fileManager.save(dic)
-    log.success(f'Usuario cadastrado com sucesso!')
+    log.success(Constant.SUCCESS_USER_REGISTER_MESSAGE)
 
 def criaClienteDict(cpf, nome, tipo, valor, senha):
     cliente = dict()
@@ -52,12 +51,20 @@ def registarar_evento(cpf, valor):
     indicator = chose_indicator(valor)
     valor = abs(valor)
 
-    lancamento = f'Data: {today.year}-{today.month}-{today.day} {today.hour}:{today.minute}:{today.second} {indicator} {valor} Tarifa: {tarifa} Saldo: {saldo}'
+    lancamento = makeEvent(today.year, today.month, today.day, today.hour, today.minute, today.second, indicator, valor, tarifa, saldo)
     eventos.append(lancamento)
     dic[cpf][Constant.EVENTS_KEYS] = eventos
 
     fileManager.save(dic)
-    log.success(f'Evento registrado com sucesso!')
+    log.success(Constant.SUCCESS_EVENT_REGISTER_MESSAGE)
+
+
+def makeEvent(year, month, day, hour, minue, second, indicator, value, tax, balance):
+    return str(Constant.EVENT_FORMAT % (
+        year, month, day, hour, minue, 
+        second, indicator, value, tax, balance
+    ))
+    
 
 
 def chose_tax(literal, value):
