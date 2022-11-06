@@ -5,8 +5,6 @@ import Logger as log
 import useCaseHelpers as useCaseHelper
 import helpers as helper
 
-COSTUMER_ALREADY_REGISTER = 'Usuario ja esta cadastrado'
-DELETION_PROCESS_SUCCEDED = 'Usuario deletado com successo'
 
 def executar_opcao_novo_cliente():
     nome = input(Constant.NAME_PLACEHOLDER)
@@ -14,7 +12,7 @@ def executar_opcao_novo_cliente():
     senha = input(Constant.PASSWORD_PLACEHOLDER)
 
     if costumer_exist(cpf):
-        log.error(COSTUMER_ALREADY_REGISTER)
+        log.error(Constant.COSTUMER_ALREADY_REGISTER)
         executar_opcao_novo_cliente()
         return
 
@@ -47,7 +45,7 @@ def executar_opcao_deletando_cliente():
         dict = fileManager.load()
         dict.pop(cpf, None)
         fileManager.save(dict)
-        log.success(DELETION_PROCESS_SUCCEDED)
+        log.success(Constant.DELETION_PROCESS_SUCCEDED)
 
 def executar_opcao_debito():
     cpf = recieve_cpf()

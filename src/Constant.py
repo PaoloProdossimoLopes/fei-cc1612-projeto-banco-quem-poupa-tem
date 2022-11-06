@@ -42,6 +42,9 @@ ERROR_ON_REGISTER_EVENT_MESSAGE = 'Erro ao registrar o evento ...'
 DATA_INVALID_TRY_AGAIN_ERROR_MESSAGE = 'Dados da conta invalido, tente novamente!'
 ONLY_NUMBER_ERROR_MESSAGE = 'Coloque apenas numeros'
 
+COSTUMER_ALREADY_REGISTER = 'Usuario ja esta cadastrado'
+DELETION_PROCESS_SUCCEDED = 'Usuario deletado com successo'
+
 THANKS_MESSAGE = '👋🏼 Obrigado por usar nosos serviços! 👋🏼'
 
 COMMON_TYPE_LITERAL = 'comum'
